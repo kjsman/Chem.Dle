@@ -1,0 +1,5 @@
+span.split::before {
+    content: "|";
+    margin: 0 .5rem;
+    color: #aaa;
+}

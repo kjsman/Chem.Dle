@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chem.Dle</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script async src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.119.1/build/three.min.js"></script>
+  </head>
+  <body>
+    
+    <section class="hero is-light is-fullheight">
+      <div class="hero-head">
+        <nav class="navbar has-shadow" role="navigation" aria-label="main navigation" style="background-color: #fff!important;">
+          <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+              <img src="/image/logo.svg" width="112" height="28">
+            </a>
+            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+            
+          <div id="navbarBasicExample" class="navbar-menu">
+            <div class="navbar-start">
+              <a class="navbar-item" href="/">
+                메인
+              </a>
+              <a class="navbar-item" href="/about.html">
+                대하여
+              </a>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <div class="hero-body">
+        <div class="tile is-ancestor">
+          <div class="tile is-vertical is-9">
+            <div class="tile">
+              <div class="tile is-parent is-vertical">
+                <div class="tile is-child notification has-background-white">
+                  <div class="columns is-centered">
+                    <canvas class="column is-9" id="main-canvas"></canvas>
+                  </div>
+                  <div class="buttons are-medium is-centered has-addons">
+                    <button class="button">
+                      <span class="icon">
+                        <i class="fas fa-step-backward"></i>
+                      </span>
+                    </button>
+                    <button class="button">
+                      <span class="icon">
+                        <i class="fas fa-backward"></i>
+                      </span>
+                    </button>
+                    <button class="button">
+                      <span class="icon">
+                        <i class="fas fa-play"></i>
+                      </span>
+                    </button>
+                    <button class="button">
+                      <span class="icon">
+                        <i class="fas fa-forward"></i>
+                      </span>
+                    </button>
+                    <button class="button">
+                      <span class="icon">
+                        <i class="fas fa-step-forward"></i>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--<div class="tile is-parent">
+              <article class="tile is-child notification has-background-white">
+                <p class="title">Wide tile</p>
+                <p class="subtitle">Aligned with the right tile</p>
+              </article>
+            </div>-->
+          </div>
+          <div class="tile is-parent is-3">
+            <nav class="panel tile is-child" style="width: 100%;">
+              <p class="panel-heading">
+                물질
+              </p>
+              <div class="panel-block">
+                <p class="control has-icons-left">
+                  <input class="input" type="text" placeholder="검색">
+                  <span class="icon is-left">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                  </span>
+                </p>
+              </div>
+              <a class="panel-block is-active">
+                <span class="panel-icon">
+                  <i class="fas fa-square" aria-hidden="true"></i>
+                </span>
+                <span>Sodium chloride (NaCl)</span>
+                <button class="button is-rounded is-light" style="margin-left: auto">
+                  <span class="icon">
+                    <i class="fas fa-times"></i>
+                  </span>
+                </button>
+              </a>
+              <a class="panel-block is-active">
+                <span class="panel-icon">
+                  <i class="fas fa-water" aria-hidden="true"></i>
+                </span>
+                <span>Water (H<sub>2</sub>O)</span>
+                <button class="button is-rounded is-light" style="margin-left: auto">
+                  <span class="icon">
+                    <i class="fas fa-times"></i>
+                  </span>
+                </button>
+              </a>
+              <a class="panel-block is-active">
+                <span class="panel-icon">
+                  <i class="fas fa-wind" aria-hidden="true"></i>
+                </span>
+                <span>Oxygen (O<sub>2</sub>)</span>
+                <button class="button is-rounded is-light" style="margin-left: auto">
+                  <span class="icon">
+                    <i class="fas fa-times"></i>
+                  </span>
+                </button>
+              </a>
+              <div class="panel-block">
+                  <button class="button is-link is-outlined is-fullwidth">
+                    <span class="icon is-small">
+                      <i class="fas fa-plus"></i>
+                    </span>
+                    <span>물질 추가하기</span>
+                  </button>
+              </div>
+              <div class="panel-block">
+                <button class="button is-link is-outlined is-fullwidth">
+                  <span class="icon is-small">
+                    <i class="fas fa-trash"></i>
+                  </span>
+                  <span>모두 지우기</span>
+                </button>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div class="hero-foot">
+        <div class="container is-fluid">
+          <div class="notification has-text-centered has-background-white">
+            <a href="http://djshs.djsch.kr">DSHS</a> AI Hackathon Submission
+              <span class="split"></span>
+            Made by <a href="https://kjsman.me">Jinseo Kim</a> with ❤️
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="/js/render.js"></script>
+  </body>
+</html>
