@@ -3,3 +3,11 @@ span.split::before {
     margin: 0 .5rem;
     color: #aaa;
 }
+
+.meta-select-button:hover {
+    background-color: hsl(0, 0%, 90%);
+}
+
+.justify-content-center {
+    justify-content: center;
+}

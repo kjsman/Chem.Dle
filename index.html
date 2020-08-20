@@ -9,6 +9,7 @@
     <script async src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.119.1/build/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@0.19.2/dist/axios.min.js"></script>
   </head>
   <body>
     <section class="hero is-light is-fullheight">
@@ -38,7 +39,7 @@
       </div>
       <div class="hero-body" id="app">
         <div class="tile is-ancestor">
-          <div class="tile is-vertical is-9">
+          <div class="tile is-vertical is-8">
             <div class="tile">
               <div class="tile is-parent is-vertical">
                 <div class="tile is-child notification has-background-white">
@@ -82,7 +83,7 @@
               </article>
             </div>-->
           </div>
-          <div class="tile is-parent is-3">
+          <div class="tile is-parent is-4">
             <nav class="panel tile is-child" style="width: 100%;">
               <p class="panel-heading">
                 물질
@@ -96,31 +97,40 @@
                 </p>
               </div>
 
-              <a v-for="(substance, index) in substances" class="panel-block">
+              <div v-for="(substance, index) in substances" class="panel-block">
                 <span class="panel-icon">
-                  <i class="fas" v-bind:class="{
-                    'fa-square': substance.common_state == 'solid',
-                    'fa-water':  substance.common_state == 'liquid',
-                    'fa-wind':   substance.common_state == 'gas',
-                 }" aria-hidden="true"></i>
+                  <i class="fas fa-square" aria-hidden="true"></i>
                 </span>
-                <span>{{substance.name}} (<span v-html="substance.formula"></span>)</span>
-                <button v-on:click="removeSubstanceIndex(index)" class="button is-rounded is-light" style="margin-left: auto">
+                <div class="columns is-multiline mb-0">
+                <span class="column is-full pb-0">{{substance.name}} (<span v-html="formatMolecularFormula(substance.formula)"></span>, {{ substance.mw }} g/mol)</span>
+                <div class="field has-addons column is-5 py-1">
+                  <p class="control">
+                    <a class="button is-static">
+                      분자 수
+                    </a>
+                  </p>
+                  <p class="control">
+                    <input v-model="substance.qty" class="input" type="number" min="0" placeholder="">
+                  </p>
+                  
+                </div>
+                </div>
+                <button v-on:click="removeSubstanceByIndex(index)" class="button is-rounded is-light" style="margin-left: auto">
                   <span class="icon">
                     <i class="fas fa-times"></i>
                   </span>
                 </button>
-              </a>
-              <a v-if="substances.length == 0" class="panel-block has-text-centered" style="justify-content: center; cursor: default;">
+              </div>
+              <div v-if="substances.length == 0" class="panel-block has-text-centered justify-content-center">
                 <span class="is-italic py-2 has-text-grey">물질이 없습니다</span>
-              </a>
+              </div>
 
               <div class="panel-block">
-                  <button class="button is-link is-outlined is-fullwidth">
+                  <button v-on:click="openMetaSelectModal" class="button is-link is-outlined is-fullwidth">
                     <span class="icon is-small">
                       <i class="fas fa-plus"></i>
                     </span>
-                    <span>물질 추가하기</span>
+                    <span>물질 선택하기</span>
                   </button>
               </div>
               <div class="panel-block">
@@ -134,6 +144,95 @@
             </nav>
           </div>
         </div>
+        <div class="modal-root">
+          <div id="meta-select-modal" class="modal" v-bind:class="{ 'is-active': modalActived == 'metaSelect' }">
+            <div v-on:click="closeModal" class="modal-background"></div>
+            <div class="modal-card">
+              <header class="modal-card-head">
+                <p class="modal-card-title">물질 선택하기</p>
+                <button v-on:click="closeModal" class="delete" aria-label="close"></button>
+              </header>
+                <div class="modal-card-foot is-fullwidth is-mobile is-centered">
+                  <div v-on:click="openTextSearchModal" class="card-footer-item meta-select-button" style="cursor: pointer;">
+                    <div class="card-image">
+                      <figure class="image is-4by3">
+                        <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+                      </figure>
+                    </div>
+                    <div class="card-content">
+                      <div class="media">
+                        <div class="media-content">
+                          <p class="title is-4">텍스트로 검색</p>
+                        </div>
+                      </div>
+                      <div class="content">
+                        화학식, 이름, SMILES 등 텍스트를 바탕으로 화학 물질을 검색합니다. 
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-footer-item meta-select-button" style="cursor: pointer;">
+                    <div class="card-image">
+                      <figure class="image is-4by3">
+                        <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+                      </figure>
+                    </div>
+                    <div class="card-content">
+                      <div class="media">
+                        <div class="media-content">
+                          <p class="title is-4">그려서 검색</p>
+                        </div>
+                      </div>
+                      <div class="content">
+                        직접 그려서 화학 물질을 검색합니다.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+          <div id="meta-select-modal" class="modal" v-bind:class="{ 'is-active': modalActived == 'textSearch' }">
+            <div v-on:click="closeModal" class="modal-background"></div>
+            <div class="panel modal-card">
+              <header class="panel-head modal-card-head">
+                <p class="modal-card-title">텍스트로 검색</p>
+                <button v-on:click="closeModal" class="delete" aria-label="close"></button>
+              </header>
+              <div class="panel-block modal-card-body">
+                <p class="control has-icons-left">
+                  <input v-model="keywordTextSearch" class="input" type="text" placeholder="H2O, Sodium hydroxide, Aspirin, CC(=O)NC1=CC=C(C=C1)O, ...">
+                  <span class="icon is-left">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                  </span>
+                </p>
+              </div>
+              <div v-for="(searchResult, index) in resultTextSearch" class="panel-block modal-card-body">
+                <div class="media">
+                  <div class="media-left">
+                    <figure class="image is-48x48">
+                      <img v-bind:src="'https://pubchem.ncbi.nlm.nih.gov/image/imgsrv.fcgi?cid=' + searchResult.cid + '&t=s'" alt="Placeholder image">
+                    </figure>
+                  </div>
+                  <div class="media-content">
+                    <p class="title is-5">{{ searchResult.cmpdname }} (<span v-html="formatMolecularFormula(searchResult.mf)"></span>)</p>
+                    <p class="subtitle is-6"><strong>M<sub>w</sub>:</strong> {{ searchResult.mw }} g/mol</p>
+                  </div>
+                  
+                </div>
+                <button v-on:click="addSubstanceFromTextSearch(index)" class="button is-rounded is-primary" style="margin-left: auto">
+                  선택
+                </button>
+                <!--< href="">
+                <span>{{cmpdsynonym.slice(0, 64).split('|').slice(0, -1).join('; ') + "; ..."}}</span>-->
+              </div>
+              <div v-if="isNoResultTextSearch" class="panel-block modal-card-body justify-content-center">
+                <span class="is-italic py-2 has-text-grey">검색 결과가 없습니다</span>
+              </div>
+              <div v-if="isRunningTextSearch" class="panel-block modal-card-body justify-content-center">
+                <span class="is-italic py-2 has-text-grey">검색 중입니다...</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="hero-foot">
         <div class="container is-fluid">
@@ -145,6 +244,7 @@
         </div>
       </div>
     </section>
+    <script src="/js/helpers.js"></script>
     <script src="/js/main.js"></script>
   </body>
 </html>
