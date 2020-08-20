@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="/css/main.css">
     <script async src="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.14.0/js/all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.119.1/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
   </head>
   <body>
-    
     <section class="hero is-light is-fullheight">
       <div class="hero-head">
         <nav class="navbar has-shadow" role="navigation" aria-label="main navigation" style="background-color: #fff!important;">
@@ -36,7 +36,7 @@
           </div>
         </nav>
       </div>
-      <div class="hero-body">
+      <div class="hero-body" id="app">
         <div class="tile is-ancestor">
           <div class="tile is-vertical is-9">
             <div class="tile">
@@ -95,39 +95,26 @@
                   </span>
                 </p>
               </div>
-              <a class="panel-block is-active">
+
+              <a v-for="(substance, index) in substances" class="panel-block">
                 <span class="panel-icon">
-                  <i class="fas fa-square" aria-hidden="true"></i>
+                  <i class="fas" v-bind:class="{
+                    'fa-square': substance.common_state == 'solid',
+                    'fa-water':  substance.common_state == 'liquid',
+                    'fa-wind':   substance.common_state == 'gas',
+                 }" aria-hidden="true"></i>
                 </span>
-                <span>Sodium chloride (NaCl)</span>
-                <button class="button is-rounded is-light" style="margin-left: auto">
+                <span>{{substance.name}} (<span v-html="substance.formula"></span>)</span>
+                <button v-on:click="removeSubstanceIndex(index)" class="button is-rounded is-light" style="margin-left: auto">
                   <span class="icon">
                     <i class="fas fa-times"></i>
                   </span>
                 </button>
               </a>
-              <a class="panel-block is-active">
-                <span class="panel-icon">
-                  <i class="fas fa-water" aria-hidden="true"></i>
-                </span>
-                <span>Water (H<sub>2</sub>O)</span>
-                <button class="button is-rounded is-light" style="margin-left: auto">
-                  <span class="icon">
-                    <i class="fas fa-times"></i>
-                  </span>
-                </button>
+              <a v-if="substances.length == 0" class="panel-block has-text-centered" style="justify-content: center; cursor: default;">
+                <span class="is-italic py-2 has-text-grey">물질이 없습니다</span>
               </a>
-              <a class="panel-block is-active">
-                <span class="panel-icon">
-                  <i class="fas fa-wind" aria-hidden="true"></i>
-                </span>
-                <span>Oxygen (O<sub>2</sub>)</span>
-                <button class="button is-rounded is-light" style="margin-left: auto">
-                  <span class="icon">
-                    <i class="fas fa-times"></i>
-                  </span>
-                </button>
-              </a>
+
               <div class="panel-block">
                   <button class="button is-link is-outlined is-fullwidth">
                     <span class="icon is-small">
@@ -137,7 +124,7 @@
                   </button>
               </div>
               <div class="panel-block">
-                <button class="button is-link is-outlined is-fullwidth">
+                <button v-on:click="removeAllSubstances" class="button is-link is-outlined is-fullwidth">
                   <span class="icon is-small">
                     <i class="fas fa-trash"></i>
                   </span>
@@ -158,6 +145,6 @@
         </div>
       </div>
     </section>
-    <script src="/js/render.js"></script>
+    <script src="/js/main.js"></script>
   </body>
 </html>

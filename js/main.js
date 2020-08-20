@@ -1,3 +1,22 @@
+var app = new Vue({
+    el: '#app',
+    data: {
+      substances: [
+          { name: "Sodium Chloride", formula: "NaCl", common_state: "solid" },
+          { name: "Water", formula: "H<sub>2</sub>O", common_state: "liquid" },
+          { name: "Oxygen", formula: "O<sub>2</sub>", common_state: "gas" },
+      ]
+    },
+    methods: {
+        'removeAllSubstances': function(event) {
+            while(this.substances.length > 0) {this.substances.pop();}
+        },
+        'removeSubstanceIndex': function(idx) {
+            this.substances.splice(idx, 1)
+        }
+    }
+  })
+
 var container = document.getElementById('main-canvas');
 
 var w = container.offsetWidth;
@@ -26,3 +45,4 @@ var animate = function () {
 };
 
 animate();
+
