@@ -77,6 +77,7 @@ var app = new Vue({
                 }
             } else if (validity[0].valid) { // SMILES
                 if (startKeyword != this.keywordTextSearch) return
+                
                 resp = await axios.get(`https://pubchem.ncbi.nlm.nih.gov/unified_search/structure_search.cgi?format=json&queryblob=%7B%22query%22%3A%7B%22type%22%3A%22identity%22%2C%22parameter%22%3A%5B%7B%22name%22%3A%22SMILES%22%2C%22string%22%3A%22${encodeURIComponent(startKeyword)}%22%7D%2C%7B%22name%22%3A%22UseCache%22%2C%22bool%22%3Atrue%7D%2C%7B%22name%22%3A%22identity_type%22%2C%22string%22%3A%22same_stereo_isotope%22%7D%5D%7D%7D`)
                 if (resp.data.response.status != 0) {
                     validity[0].valid = 0
@@ -95,8 +96,14 @@ var app = new Vue({
                         "listids": 0
                     }
                 }
-            } 
+            }
             if (!(validity[0].valid || validity[2].valid)) {
+                resp = await axios.get(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(startKeyword)}/cids/JSON`)
+                if (resp.data.IdentifierList) {
+                    var cid = resp.data.IdentifierList.CID[0]
+                    resp = await axios.get(`https://pubchem.ncbi.nlm.nih.gov/sdq/sdqagent.cgi?infmt=json&outfmt=json&query={%22select%22:%22*%22,%22collection%22:%22compound%22,%22where%22:{%22ands%22:[{%22cid%22:%22${cid}%22}]},%22order%22:[%22cid,asc%22],%22start%22:1,%22limit%22:10,%22width%22:1000000,%22listids%22:0}`)
+                    this.resultTextSearch = this.resultTextSearch.concat(resp.data.SDQOutputSet[0].rows)
+                }
                 var query = {
                     "select": "*",
                     "collection": "compound",
@@ -116,7 +123,7 @@ var app = new Vue({
             if (results.length == 0) {
                 this.isNoResultTextSearch = true
             } else {
-                this.resultTextSearch = results.filter((q) => q.cmpdname)
+                this.resultTextSearch = this.resultTextSearch.concat(results.filter((q) => q.cmpdname))
                 this.isNoResultTextSearch = false
             }
         },
