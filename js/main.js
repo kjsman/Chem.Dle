@@ -146,7 +146,7 @@ renderer.setSize(w, h);
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera( 75, w / h, 0.1, 1000 );
 
-var geometry = new THREE.BoxGeometry();
+var geometry = new THREE.SphereGeometry(1, 32, 32);
 var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 var cube = new THREE.Mesh( geometry, material );
 scene.add( cube );
